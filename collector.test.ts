@@ -1323,6 +1323,16 @@ describe("capped unread keep vs hidden chats", () => {
     expect(kept.oldest).toEqual({});
   });
 
+  test("a missing chats list cannot mean filtered — restore the old keep", () => {
+    const kept = keepCappedUnread(
+      { A: 1 }, {},
+      { A: 1, B: 3 }, { B: "2026-08-01 09:00:00" },
+      new Set(["A"]), null,
+    );
+    expect(kept.counts).toEqual({ A: 1, B: 3 });
+    expect(kept.oldest).toEqual({ B: "2026-08-01 09:00:00" });
+  });
+
   test("an alias of a listed chat still counts as visible", () => {
     const visible = visibleLedgerChats([], [row("LIVE", ["OLD"])]);
     expect(visible.has("LIVE")).toBe(true);

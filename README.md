@@ -419,8 +419,9 @@ hide_unknown=on
 
 Either key, or both. Default is off. This is the folder, not a phrase: a
 fundraising blast that Messages left in the inbox still needs the mute list.
-Needs a `blip-setup` re-run (or a copy of `bridge/mac/imsg` to the Mac)
-so `--hide-spam` / `--hide-unknown` exist on the far side.
+Needs a `blip-setup` re-run, or copy **both** `bridge/mac/imsg` to the Mac
+and `bridge/linux/blip-shim` over `~/bin/imsg` — the shim is what reads the
+keys and passes `--hide-spam` / `--hide-unknown`.
 
 
 **Outside North America:** set `country_code=44` (etc.) in

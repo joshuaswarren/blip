@@ -709,21 +709,22 @@ export function visibleLedgerChats(msgs: ImsgMessage[], chats: ChatInfo[] | null
   return ids;
 }
 
-/** Astra B#3: a capped window must not zero an unread it never saw. Only
- *  restore chats that are still visible — otherwise Spam we hid in SQL
- *  pins catch-up (oldestUnread never appears) and keeps the bar badge. */
+/** Astra B#3: a capped window must not zero an unread it never saw.
+ *  `visible` is the chats list when we have one — omit a chat hide_spam
+ *  dropped. `null` means the listing failed: restore everything, because
+ *  absence from a missing list cannot mean filtered. */
 export function keepCappedUnread(
   exactCounts: Record<string, number>,
   exactOldest: Record<string, string>,
   priorCounts: Record<string, number>,
   priorOldest: Record<string, string>,
   inWindow: Set<string>,
-  visible: Set<string>,
+  visible: Set<string> | null,
 ): { counts: Record<string, number>; oldest: Record<string, string> } {
   const counts = { ...exactCounts };
   const oldest = { ...exactOldest };
   for (const [c, n] of Object.entries(priorCounts)) {
-    if (n > 0 && !inWindow.has(c) && !(c in counts) && visible.has(c)) {
+    if (n > 0 && !inWindow.has(c) && !(c in counts) && (visible === null || visible.has(c))) {
       counts[c] = n;
       if (priorOldest[c]) oldest[c] = priorOldest[c]!;
     }
@@ -1496,7 +1497,7 @@ export function collect(deep: boolean, markRead = false, readChat = "", seenTs =
     const kept = keepCappedUnread(
       exactCounts, exactOldest,
       state.unreadCounts, state.unreadOldest,
-      inWindow, visibleLedgerChats(msgs, listed),
+      inWindow, listed === null ? null : visibleLedgerChats(msgs, listed),
     );
     exactCounts = kept.counts;
     exactOldest = kept.oldest;
