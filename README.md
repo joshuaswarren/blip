@@ -652,3 +652,7 @@ and it's the reason this took an evening, not a week.
 **Contributors:** [@jethrojones](https://github.com/jethrojones) — `blip-check` across every Contacts source (#2).
 
 MIT.
+
+## Contributors
+
+Everyone credited so far: [CONTRIBUTORS.md](CONTRIBUTORS.md).
